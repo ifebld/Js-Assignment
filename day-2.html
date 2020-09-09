@@ -55,9 +55,12 @@
 		var phone = prompt("Enter Phone Number")
 		if (phone.length==11){
 			var amount = prompt("Enter Amount");
-
-			alert("Recharge Successfull")
-		}else{
+			var sure = confirm("Are you sure you want to continue this Transaction?")
+			if (sure==true) {
+				alert("Recharge Successful")
+			}
+			}	
+		else{
 			alert("Enter an appropriate phone number")
 		}
 		
@@ -71,6 +74,10 @@
 			var amount = prompt("Enter Amount");
 			if (amount>1000) {
 				alert("Recharge Above N1000 is Not Allowed")
+			}
+			var sure = confirm("Are you sure you want to continue this Transaction?")
+			if (sure==true) {
+				alert("Recharge Successful")
 			}
 			else{
 			alert("Recharge Successfull")
@@ -97,6 +104,10 @@
 
 		alert("Data Recharge Successfull")
 		}
+		var sure = confirm("Are you sure you want to continue this Transaction?")
+			if (sure==true) {
+				alert("Recharge Successful")
+			}
 
 		else{
 			alert("Invalid Short-Code")
@@ -112,13 +123,17 @@
 			if (Transfer >100000) {
 				alert("Transaction Must be Below 100000")
 			}
+			var sure = confirm("Are you sure you want to continue this Transaction?")
+			if (sure==true) {
+				alert("Transaction Successful")
+			}
 			alert("Transaction Successfull")
 		}
 		else{ prompt("Select Bank \n1. First Bank \n2. GTBank \n3. Zenith Bank \n4. Polaris Bank")
 			var Transfer = prompt("Enter Amount")
 			if (Transfer >100000) {
 				alert("Transaction Must be Below 100000")
-			}
+			
 		}
 
 
