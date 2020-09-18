@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<style>
+		/*table and button styling*/
+		body {
+			width: 60%; margin: auto;
+		}
+		table {
+		  font-family: sans-serif;
+		  border-collapse: collapse;
+		  width: 100%; margin-top: 20px;
+		}
+
+		td, th {
+		  border: 1px solid #666;
+		  text-align: center;
+		  padding: 8px;
+		}
+
+		tr:nth-child(even) {
+		  background-color: #333;
+		}
+	</style>
+		
+<title>Day-6</title>
+</head>
+
+
+<body>
+<div id="content"></div> 
+
+
+<script>
+	//company info arrays
+	company = [
+		{
+			"SN" : "1",
+			"name" : "Tiidelab",
+			"mail" : "hi@Tiidelab.com",
+			"phone" : "0982402484",
+			"location" : "Nigeria"
+		},
+		{
+			"SN" : "2",
+			"name" : "TechSpecialist",
+			"mail" : "help@TechSpecialist.com",
+			"phone" : "07039298403",
+			"location" : "Africa"
+		},
+		{
+			"SN" : "3",
+			"name" : "JirehTravels",
+			"mail" : "contact@JirehTravels.com",
+			"phone" : "09484927530",
+			"location" : "Africa"
+		},
+		{
+			"SN" : "4",
+			"name" : "Oracle",
+			"mail" : "me@Oracle.com",
+			"phone" : "4980954454",
+			"location" : "World"
+		},
+		{
+			"SN" : "5",
+			"name" : "Flutterwave",
+			"mail" : "hello@Flutterwave.com",
+			"phone" : "000384040495",
+			"location" : "World"
+		}
+	]
+
+	function displayInfo() {
+		objectKeys = Object.keys(company[0]); 
+		result = `
+		<table cellpadding="10" align="center">
+		<tr>`;
+		for(i=0; i < objectKeys.length; i++) { 
+			result += `<th>${(objectKeys[i]).toUpperCase()}</th>`
+		}
+		result += `
+		</tr>
+		<tbody>
+		`; 
+		for(j=0; j < company.length; j++) { 
+			result += `<tr>`;
+			result += `<td>${company[j].SN}</td>`;
+			result += `<td>${company[j].name}</td>`;
+			result += `<td>${company[j].mail}</td>`;
+			result += `<td>${company[j].phone}</td>`;
+			result += `<td>${company[j].location}</td>`;
+			result += `</tr>`;
+		}
+		result += `
+		</tbody>
+		</table>
+		`;
+		document.getElementById("content").innerHTML = `${result}`; 
+
+	}
+
+displayInfo(); 
+
+
+</script>
+
+
+	</body>
+</html> 
