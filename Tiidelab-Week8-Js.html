@@ -1,0 +1,349 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Ifeoluwa</title>
+</head>
+
+<body>
+<div class="infobar">TIIDELab Fellows</div>
+	
+	<!--display button -->
+<button class="open-button" onclick="openForm('Add')">+ Add New Fellow</button>
+	<!-- form -->
+	<div id="form-content"></div>
+	<div class="searchBar">
+			<input type="text" id="searchFellows" style="width: 30%; margin-top: 20px; margin-bottom: 20px;"> 
+			<button id="searchSingle" class="black" onclick="searchSingle();">Search</button>
+			<button id="searchAll" class="red" onclick="searchAll();">Search All</button>
+			<button id="searchParam" class="black" onclick="searchPart();">Part Search</button>
+		</div>
+	<!-- Display fellows -->
+	<div id="content"></div> 
+
+
+<script>
+		
+		fellows = JSON.parse(localStorage.getItem("fellows"));
+		
+		if(fellows == null || fellows == undefined) {
+			
+			
+			fellows = [ 
+				//Array 
+					{
+						"ID" : 1,
+						"img" : "1.png",
+						"fullName" : "Akan Asanga",
+						"mail" : "Akan.asanga@tiidelab.com",
+						"phone" : "09048940949",
+						"status" : "Member"
+					},
+					{
+						"ID" : 2,
+						"img" : "2.png",
+						"fullName" : "Jane Andeh",
+						"mail" : "Jane.andeh@Tiidelab.com",
+						"phone" : "07048478364",
+						"status" : "Member"
+					},
+					{
+						"ID" : 3,
+						"img" : "3.png",
+						"fullName" : "Ayoade Rasheed",
+						"mail" : "Aisha.rasheed@tiidelab.com",
+						"phone" : "09048978797",
+						"status" : "Member"
+					},
+					{		
+						"ID" : 4,			
+						"img" : "4.png",
+						"fullName" : "Adebiyi Rotimi",
+						"mail" : "Adebiyi.rotimi@tiidelab.com",
+						"phone" : "09747475894",
+						"status" : "Team Lead"
+					},
+					{
+						"ID" : 5,
+						"img" : "5.png",
+						"fullName" : "Opaluwa Aisha",
+						"mail" : "Opaluwa.aisha@tiidelab.com",
+						"phone" : "06464748574",
+						"status" : "Member"
+					}
+				];
+				
+				localStorage.setItem("fellows", JSON.stringify(fellows)); 
+				fellows = JSON.parse(localStorage.getItem("fellows"));
+		   }
+		
+		originalFellows = JSON.parse(localStorage.getItem("fellows"));
+		
+		
+		lastFellowID = JSON.parse(localStorage.getItem("lastFellowID"));
+		if(lastFellowID == null || lastFellowID == undefined) {
+			localStorage.setItem("lastFellowID", 4); 
+			lastFellowID = JSON.parse(localStorage.getItem("lastFellowID"));
+		}
+
+
+		function addFellow() { 
+			lastFellowID = JSON.parse(localStorage.getItem("lastFellowID"));
+			//add another fellow
+			newFellow = {		
+				"ID" : (lastFellowID + 1),
+				"img" : document.getElementById("img").value,
+				"fullName" : document.getElementById("fullName").value,
+				"mail" : document.getElementById("mail").value,
+				"phone" : document.getElementById("phone").value,
+				"status" : document.getElementById("status").value
+			}
+			originalFellows.push(newFellow); 
+			localStorage.setItem("fellows", JSON.stringify(originalFellows));
+			newLastFellowID = lastFellowID + 1;
+			localStorage.setItem("lastFellowID", newLastFellowID); 
+			msg = "New Information Added \nClick OK to Continue";  
+			displayInfo(msg); //shows updated info
+		}
+
+		function originalIndex(index) {
+			fellowsRecord = fellows[index];
+			fid = originalFellows.findIndex(x=>x.ID == fellowsRecord.ID);
+			return fid;
+		}
+		function editFellow(fellowId) {
+			openForm("Edit", fellowId);
+		}
+
+		function editFellowDetails(fellowId) { //edit fellow info
+			fid = originalIndex(fellowId);
+  			originalFellows[fid] = {
+					"img" : document.getElementById("img").value,
+					"fullName" : document.getElementById("fullName").value,
+					"mail" : document.getElementById("mail").value,
+					"phone" : document.getElementById("phone").value,
+					"status" : document.getElementById("status").value
+			}
+				localStorage.setItem("fellows", JSON.stringify(originalFellows));
+				msg = "New Information Updated \nClick OK to Continue"; //alert success message
+				fellows = JSON.parse(localStorage.getItem("fellows"));
+				displayInfo(msg); //shows updated info 
+			}
+
+		function deleteFellow(fellowId) { //delete fellow
+			con = confirm(`Are you sure you want to delete ${fellows[fellowId].fullName}?`)
+			if (con == true) {
+				fid = originalIndex(fellowId);
+				originalFellows.splice(fid, 1);
+				localStorage.setItem("fellows", JSON.stringify(originalFellows));
+				msg = "Fellow Deleted \nClick OK to Continue"; //alert success message
+				fellows = JSON.parse(localStorage.getItem("fellows"));
+				displayInfo(msg); //shows updated info
+
+			}
+		}
+
+		function getParam() {
+			
+			param = document.getElementById("searchFellows").value;
+			if(param.length < 1) {
+				alert("Error!! No input entered!");
+			} else if (param.length < 3) {
+				alert("Error!! Search parameter must be greater than two(2) letters.")
+			} else {
+				return true;
+			}
+		}
+
+		function setRecord(param) {
+			
+			if(param == 1) {
+				document.getElementById("recordBar").innerHTML = `1 record found.`;
+			} else {
+				document.getElementById("recordBar").innerHTML = `${param} records found.`;
+			}
+		}
+
+		function searchSingle() {
+			
+			if(getParam() == true) {
+				param = (document.getElementById("searchFellows").value).toLowerCase();
+				fellowsObject = fellows.find(x=>x.fullName.toLowerCase()==param);
+				if(fellowsObject == undefined || fellowsObject == null) {
+					alert(`No record found for ${param}.`);
+				} else {
+					document.getElementById("recordBar").style.display = "block";
+					fellows = [];
+					fellows.push(fellowsObject);
+					setRecord(fellows.length);
+					displayInfo();
+				}
+			} 
+		}
+
+		function searchAll() {
+			
+			if(getParam() == true) {
+				param = (document.getElementById("searchFellows").value).toLowerCase();
+				fellows = fellows.filter(x=>x.fullName.toLowerCase()==param);
+				if(fellows == undefined || fellows == null || fellows == "") {
+					alert(`No record found for ${param}.`);
+				} else {
+					document.getElementById("recordBar").style.display = "block";
+					setRecord(fellows.length);
+					displayInfo();
+				}
+			}
+		}
+
+		function searchPart() {
+			
+			if(getParam() == true) {
+				param = (document.getElementById("searchFellows").value).toLowerCase();
+				fellows = fellows.filter(x=>x.fullName.toLowerCase().includes(param));
+				if(fellows == undefined || fellows == null || fellows == "") {
+					alert(`No record found for ${param}.`);
+				} else {
+					document.getElementById("recordBar").style.display = "block";
+					setRecord(fellows.length);
+					displayInfo();
+				}
+			}
+		}
+
+		function displayForm(parms, id) { 
+			if(parms == "Add") { //Form to add new user
+				formContent = `<div class="form-popup" id="myForm">
+				  <form class="form-container" id="fellow" onSubmit="addFellow();">
+					<h3 align="center">ADD A NEW FELLOW</h3>
+
+					<label for="img"><b>Profile Picture</b></label> <input type="text" id="img" placeholder="Enter Profile Picture URL" required>
+					<label for="fullName"><b>Full Name</b></label><input type="text" id="fullName" value="" placeholder="Enter Full name" required>
+					<label for="email"><b>Email</b></label> <input type="text" id="mail" placeholder="Enter Email" required>
+					<label for="status"><b>Status</b></label><br>
+					<select id="status" form="fellow">
+						<option value="Member">Member</option>
+						<option value="Team Lead">Team Lead</option>
+					</select>
+					<br>
+					<label for="phone"><b>Phone Number</b></label><input type="text" id="phone" placeholder="Enter Phone Number" required>
+
+					<button type="submit" class="btn">Add Fellow</button>
+					<button type="button" class="btn cancel" onclick="closeForm();">Close</button>
+				  </form></div>`;
+			}
+			else  { //Form to Edit user
+				fellowId = id; 
+				formContent = `<div class="form-popup" id="myForm">
+					<form class="form-container" id="fellow" onSubmit="editFellowDetails(${fellowId});">
+					<h3 align="center">EDIT FELLOW</h3>
+
+					<label for="img"><b>Profile Picture</b></label> <input type="text" id="img" value="${fellows[fellowId].img}" placeholder="${fellows[fellowId].img}">
+					<label for="fullName"><b>Full Name</b></label><input type="text" id="fullName" value="${fellows[fellowId].fullName}" placeholder="${fellows[fellowId].fullName}">
+					<label for="email"><b>Email</b></label> <input type="text" id="mail" value="${fellows[fellowId].mail}" placeholder="${fellows[fellowId].mail}" >
+					<label for="status"><b>Status</b></label><br>
+					<select id="status" form="fellow">`
+						if(fellows[fellowId].status == "Member") { 
+							formContent += `<option value="Member" selected>Member</option><option value="Team Lead">Team Lead</option>` } else {
+							formContent += `<option value="Member">Member</option><option value="Team Lead" selected>Team Lead</option>` }
+				formContent += `</select>
+					<br>
+					<label for="phone"><b>Phone Number</b></label><input type="text" id="phone" value="${fellows[fellowId].phone}" placeholder="${fellows[fellowId].phone}">
+
+					<button type="submit" class="btn">Edit Fellow</button>
+					<button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+					</form></div>`
+			}
+			document.getElementById("form-content").innerHTML = formContent; 
+		}
+
+		function displayType(args) { 
+			displayInfo(null, args)
+		}
+
+		function displayInfo(msg, display) {
+			if(display == "member") { //if members only selected
+				
+				content = "";
+				for(j=0; j < fellows.length; j++) {		
+					if(fellows[j].status != "Member") { 
+						continue;
+					}
+					else {
+						content += 
+						`<div class="fellows">
+							<div class="fellowsImg"><img src="${fellows[j].img}"></div>
+							<div class="fellowsContent">
+							<strong>${fellows[j].fullName}</strong><br>
+							<em>${fellows[j].mail}</em><br>
+							${fellows[j].phone}<br>
+							${fellows[j].status}<br>
+							<button onClick="editFellow(${j});" class="black">Edit User</button> &nbsp; <button onClick="deleteFellow(${j});" class="red">Delete User</button>
+						</div>
+					</div>`;
+					}
+				}
+			}
+			else if (display == "teamLead") { //if team leads selected
+				content = "";
+				for(j=0; j < fellows.length; j++) {		
+					if(fellows[j].status != "Team Lead") { 
+						continue;
+					}
+					else {
+						content += 
+						`<div class="fellows">
+							<div class="fellowsImg"><img src="${fellows[j].img}"></div>
+							<div class="fellowsContent">
+							<strong>${fellows[j].fullName}</strong><br>
+							<em>${fellows[j].mail}</em><br>
+							${fellows[j].phone}<br>
+							${fellows[j].status}<br>
+							<button onClick="editFellow(${j});" class="black">Edit User</button> &nbsp; <button onClick="deleteFellow(${j});" class="red">Delete User</button>
+						</div>
+					</div>`;
+					}
+			   }			 	
+			}
+			else {
+				content = "";
+				for(j=0; j < fellows.length; j++) {		
+					content += 
+						`<div class="fellows">
+							<div class="fellowsImg"><img src="${fellows[j].img}"></div>
+							<div class="fellowsContent">
+							<strong>${fellows[j].fullName}</strong><br>
+							<em>${fellows[j].mail}</em><br>
+							${fellows[j].phone}<br>
+							${fellows[j].status}<br>
+							<button onClick="editFellow(${j});" class="black">Edit User</button> &nbsp; <button onClick="deleteFellow(${j});" class="red">Delete User</button>
+						</div>
+					</div>`;
+					}		
+			}
+			document.getElementById("content").innerHTML = content; 
+			if(msg != null) { 
+				alert(msg); 
+			}
+		}
+
+	displayInfo(); 
+
+
+	function openForm(formType, fellowId) { 
+		displayForm(formType, fellowId);
+		document.getElementById("myForm").style.display = "block";
+	}
+
+	function closeForm() { 
+	  document.getElementById("myForm").style.display = "none";
+	}
+		
+	
+		
+	</script>
+		
+		
+</body>
+</html>
